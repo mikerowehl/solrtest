@@ -1,0 +1,28 @@
+name: Solr
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    services:
+      solr:
+        image: solr:8.3.1
+        ports:
+          - 2010:8983
+        options: >-
+          --health-cmd "curl --fail http://localhost:8983/v2/cores || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+
+    - name: Run Tests
+      run: |
+        echo "Checking on the solr instance"
+        curl http://localhost:2010/v2/cores
